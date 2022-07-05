@@ -22,96 +22,54 @@ from sklearn.model_selection import train_test_split
 from scipy import stats
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import explained_variance_score
+import acquire
 
+import warnings
+warnings.filterwarnings('ignore')
 
 def prepare_data():
 
-    import warnings
-    warnings.filterwarnings('ignore')
+    #Acquire baseball batting data using function in acquire.py
+    df = acquire.get_MLB_log_data()
+   
+    #Feature Engineering: Create rolling averages per team using the last 3 games to use for modeling
+    df['roll_plate_app'] = df.groupby('Team')['plate_app'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_at_bats'] = df.groupby('Team')['at_bats'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_runs_scored'] = df.groupby('Team')['runs_scored'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_hits'] = df.groupby('Team')['hits'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_doubles'] = df.groupby('Team')['doubles'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_triples'] = df.groupby('Team')['triples'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_HR'] = df.groupby('Team')['HR'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_RBI']= df.groupby('Team')['RBI'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_bases_on_balls']= df.groupby('Team')['bases_on_balls'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_intentional_bb']= df.groupby('Team')['intentional_bb'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_strikeouts']= df.groupby('Team')['strikeouts'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_hit_by_pitch']= df.groupby('Team')['hit_by_pitch'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_sac_hits']= df.groupby('Team')['sac_hits'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_sac_flies']= df.groupby('Team')['sac_flies'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_reached_on_error']= df.groupby('Team')['reached_on_error'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_double_plays']= df.groupby('Team')['double_plays'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_stolen_bases']= df.groupby('Team')['stolen_bases'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_caught_stealing']= df.groupby('Team')['caught_stealing'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_batting_avg']= df.groupby('Team')['batting_avg'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_OBP']= df.groupby('Team')['OBP'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_SLG']= df.groupby('Team')['SLG'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_OPS']= df.groupby('Team')['OPS'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_left_on_base']= df.groupby('Team')['left_on_base'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_num_players_used']= df.groupby('Team')['num_players_used'].transform(lambda x: x.rolling(3, 1).mean())
+    df['roll_is_win'] = df.groupby('Team')['is_win'].transform(lambda x: x.rolling(3, 1).mean())                       
 
-    import pandas as pd
-    import numpy as np
+    # create dummies dataframe using .get_dummies(column_names,not dropping any of the dummy columns)
+    categorical_features = ['Team','handedness_opp_pitcher']
 
-    import acquire
+    dummy_df = pd.get_dummies(df, columns=categorical_features, drop_first=False)
 
-    filename = "baseball.csv"
+    # join original df with dummies df using .concat([original_df,dummy_df])
+    #df = pd.concat([df, dummy_df], axis=1)
 
-    if os.path.isfile(filename):
-        return pd.read_csv(filename)
-    else:
-        
-        #Acquire baseball batting data using function in acquire.py
-        df = acquire.get_batting_log_data()
-        
-        # Create new column to capture that game was played away, not at home stadium
-        df['is_away'] = np.where(df['Unnamed: 4']== '@', 1, 0)
-        
-        
-        #Renaming columns for easier readability
-        df = df.rename(columns={"PA": "plate_app", "AB": "at_bats", "R": "runs_scored",
-                    "H": "hits", "2B": "doubles", "3B": "triples", "BB": "bases_on_balls", 
-                    "IBB": "intentional_bb", "SO": "strikeouts","HBP": "hit_by_pitch", 
-                    "SH": "sac_hits", "SF": "sac_flies","ROE": "reached_on_error", "GDP": "double_plays",
-                    "SB": "stolen_bases","CS": "caught_stealing", "BA": "batting_avg", "LOB": "left_on_base",
-                    "#": "num_players_used", "Thr": "handedness_opp_pitcher"}, errors="raise")
-        
-        #Feature Engineering: Create new column with result, is_win, where 1 is a win and 0 is a loss for every game
-        df['is_win'] = np.where(df.Rslt.str.startswith('W'), 1, 0)
-        
-        #Feature Engineering: Create new columns to filter by teams that made the playoffs in 2021, a.k.a. - most winning teams
-        df['made_playoffs'] = np.where((df['Team'].str.contains('Houston Astros'))|
-                               (df['Team'].str.contains('Chicago White Sox'))|
-                               (df['Team'].str.contains('Boston Red Sox'))|
-                               (df['Team'].str.contains('Atlanta Braves'))|
-                               (df['Team'].str.contains('Milwaukee Brewers'))|
-                               (df['Team'].str.contains('L.A. Dodgers'))|
-                               (df['Team'].str.contains('S.F. Giants'))|
-                               (df['Team'].str.contains('N.Y. Yankees'))|
-                                (df['Team'].str.contains('Tampa Bay Rays'))|
-                               (df['Team'].str.contains('St. Louis Cardinals'))
-                               , 1, 0)
+    df.to_csv(r'baseball.csv', index=False)
 
-        #Feature Engineering: Create rolling averages per team using the last 3 games to use for modeling
-        df['roll_plate_app'] = df.groupby('Team')['plate_app'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_at_bats'] = df.groupby('Team')['at_bats'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_runs_scored'] = df.groupby('Team')['runs_scored'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_hits'] = df.groupby('Team')['hits'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_doubles'] = df.groupby('Team')['doubles'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_triples'] = df.groupby('Team')['triples'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_HR'] = df.groupby('Team')['HR'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_RBI']= df.groupby('Team')['RBI'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_bases_on_balls']= df.groupby('Team')['bases_on_balls'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_intentional_bb']= df.groupby('Team')['intentional_bb'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_strikeouts']= df.groupby('Team')['strikeouts'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_hit_by_pitch']= df.groupby('Team')['hit_by_pitch'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_sac_hits']= df.groupby('Team')['sac_hits'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_sac_flies']= df.groupby('Team')['sac_flies'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_reached_on_error']= df.groupby('Team')['reached_on_error'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_double_plays']= df.groupby('Team')['double_plays'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_stolen_bases']= df.groupby('Team')['stolen_bases'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_caught_stealing']= df.groupby('Team')['caught_stealing'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_batting_avg']= df.groupby('Team')['batting_avg'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_OBP']= df.groupby('Team')['OBP'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_SLG']= df.groupby('Team')['SLG'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_OPS']= df.groupby('Team')['OPS'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_left_on_base']= df.groupby('Team')['left_on_base'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_num_players_used']= df.groupby('Team')['num_players_used'].transform(lambda x: x.rolling(3, 1).mean())
-        df['roll_is_win'] = df.groupby('Team')['is_win'].transform(lambda x: x.rolling(3, 1).mean())                       
-        
-        # Drop unnecessary columns
-        df = df.drop(columns=['Rk', 'Gtm', 'Unnamed: 4'])
-
-        # create dummies dataframe using .get_dummies(column_names,not dropping any of the dummy columns)
-        categorical_features = ['Team','handedness_opp_pitcher']
-
-        dummy_df = pd.get_dummies(df, columns=categorical_features, drop_first=False)
-  
-        # join original df with dummies df using .concat([original_df,dummy_df])
-        #df = pd.concat([df, dummy_df], axis=1)
-
-        df.to_csv(r'baseball.csv', index=False)
-
-        return df
+    return df
 
 
 # ### Takeaways:
