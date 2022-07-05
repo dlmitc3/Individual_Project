@@ -1,6 +1,7 @@
-Predicting Major League Baseball (MLB) Outcomes
+![mlblogo](https://user-images.githubusercontent.com/102172479/177244878-86154579-aab4-4680-befb-6d8ce1bb0dbe.png)
 
-baseball_stadium
+
+2021 Major League Baseball (MLB) Prediction and Outcomes
 
 Executive Summary
 
