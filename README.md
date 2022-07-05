@@ -263,6 +263,7 @@ To recreate this project you will need the following files from this repository:
 - README.md
 - acquire.py
 - prepare.py
+- explore.py
 - Final_Baseball_Project_Notebook.ipynb
 - .csv file from baseball-reference.com
 
