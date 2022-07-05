@@ -150,65 +150,65 @@ For the classification model predicting whether the team won, I ran statistical 
 
 ### Hypothesis 1: Is winning related to number of runs scored?
 
-equation: There is no difference between number of runs scored in a winning game and the overall average.
+H0: There is no difference between number of runs scored in a winning game and the overall average.
 
-equation : There is a difference between number of runs scored in a winning game and the overall average.
+Ha : There is a difference between number of runs scored in a winning game and the overall average.
 
 FINDING: We rejected the hypothesis that winning is not related to number of runs scored
 
 ### Hypothesis 2: Does number of hits differ by winning teams?
 
-equation : There is no difference between number of hits by winning teams and the overall average.
+H0 : There is no difference between number of hits by winning teams and the overall average.
 
-equation: There is a difference between number of hits by winning teams and the overall average.
+Ha: There is a difference between number of hits by winning teams and the overall average.
 
 FINDING: We rejected the hypothesis that winning is not related to number of hits in a game
 
 ### Hypothesis 3: Does number of home runs differ by winning teams?
 
-equation : There is no difference between number of home runs by winning teams and the overall average.
+H0 : There is no difference between number of home runs by winning teams and the overall average.
 
-equation : There is a difference between number of home runs by winning teams and the overall average.
+Ha : There is a difference between number of home runs by winning teams and the overall average.
 
 FINDING: We rejected the hypothesis that winning is not related to number of homeruns in a game
 
 ### Hypothesis 4: Is winning related to the number of runs batted in (RBI)?
 
-equation : There is no difference between number of runs batted in in a winning game and the overall average.
+H0 : There is no difference between number of runs batted in in a winning game and the overall average.
 
-equation: There is a difference between number of runs batted in in a winning game and the overall average.
+Ha: There is a difference between number of runs batted in in a winning game and the overall average.
 
 FINDING: We rejected the hypothesis that winning is not related to number of runs batted in a game
 
 ### Hypothesis 5: Is winning related to the number of total appearances at the plate by a player in the game?
 
-equation : There is no relationship between winning and the number of plate appearances.
+H0 : There is no relationship between winning and the number of plate appearances.
 
-equation: There is a relationship between winning and the number of plate appearances.
+Ha: There is a relationship between winning and the number of plate appearances.
 
 FINDING: We rejected the hypothesis that winning is not related to number of total plate appearances in a game
 
 ### Hypothesis 6: Is winning related to the number of doubles that were hit in the game?
 
-equation : There is no relationship between winning and the number of doubles in a game.
+H0 : There is no relationship between winning and the number of doubles in a game.
 
-equation: There is a relationship between winning and the number of doubles in a game.
+Ha: There is a relationship between winning and the number of doubles in a game.
 
 FINDING: We rejected the hypothesis that winning is not related to number of doubles hit in a game
 
 ### Hypothesis 7: Is winning related to the number of bases that were obtained by being walked by the pitcher?
 
-equation : There is no relationship between winning and the number of walks in a game.
+H0 : There is no relationship between winning and the number of walks in a game.
 
-equation: There is a relationship between winning and the number of walks in a game.
+Ha: There is a relationship between winning and the number of walks in a game.
 
 FINDING: We rejected the hypothesis that winning is not related to number of walks in a game
 
 ### Hypothesis 8: Is winning related to whether the team is playing away?
 
-equation : There is no relationship between winning and a team playing away.
+H0 : There is no relationship between winning and a team playing away.
 
-equation: There is a relationship between winning and a team playing away.
+Ha: There is a relationship between winning and a team playing away.
 
 FINDING: We rejected the hypothesis that winning is independent of whether a team is playing away
 
